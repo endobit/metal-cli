@@ -1,27 +1,19 @@
-// Package main is the entrypoint for the stack command line tool.
+// Package main implements the cast CLI.
 package main
 
 import (
 	"os"
 
-	"github.com/spf13/cobra"
+	"github.com/endobit/stack/internal/stack"
 )
 
 var version string
 
 func main() {
-	root := newRootCmd()
-	if err := root.Execute(); err != nil {
+	cmd := stack.NewRootCmd()
+	cmd.Version = version
+
+	if err := cmd.Execute(); err != nil {
 		os.Exit(1)
 	}
-}
-
-func newRootCmd() *cobra.Command {
-	cmd := cobra.Command{
-		Version: version,
-		Use:     "start",
-		Short:   "stack is a command line tool for interacting with stackd",
-	}
-
-	return &cmd
 }

@@ -1,17 +1,19 @@
-// Package main is the stackd daemon.
+// Package main implements the metald service.
 package main
 
 import (
 	"os"
 
-	"github.com/endobit/stack/internal/service"
+	"github.com/endobit/stack/internal/stackd"
 )
 
 var version string
 
 func main() {
-	root := service.NewRootCmd(version)
-	if err := root.Execute(); err != nil {
-		os.Exit(1)
+	cmd := stackd.NewRootCmd()
+	cmd.Version = version
+
+	if err := cmd.Execute(); err != nil {
+		os.Exit(-1)
 	}
 }
