@@ -2,8 +2,8 @@
 -- CREATE
 --
 
--- name: CreateCluster :exec
-INSERT INTO clusters (
+-- name: CreateEnvironment :exec
+INSERT INTO environments (
 	name,
 	zone
 )
@@ -17,64 +17,64 @@ VALUES (
 -- READ
 --
 
--- name: ReadClusters :many
+-- name: ReadEnvironments :many
 SELECT
-	c.id,
-	c.name,
+	e.id,
+	e.name,
 	z.name AS zone
 FROM
-	clusters c
+	environments e
 JOIN
-	zones z ON c.zone = z.id
+	zones z ON e.zone = z.id
 ORDER BY
 	z.name,
-	c.name
+	e.name
 LIMIT
 	COALESCE(NULLIF(@limit, 0), 100) OFFSET COALESCE(@offset, 0);
 
--- name: ReadCluster :one
+-- name: ReadEnvironment :one
 SELECT
-	c.id,
-	c.name,
+	e.id,
+	e.name,
 	z.name AS zone
 FROM
-	clusters c
+	environments e
 JOIN
-	zones z ON c.zone = z.id
+	zones z ON e.zone = z.id
 WHERE
-	c.name = @name
+	e.name = @name
 	AND z.name = @zone;
 
--- name: ReadClustersByGlob :many
+-- name: ReadEnvironmentsByGlob :many
 SELECT
-	c.id,
-	c.name,
+	e.id,
+	e.name,
 	z.name AS zone
 FROM
-	clusters c
+	environments e
 JOIN
-	zones z ON c.zone = z.id
+	zones z ON e.zone = z.id
 WHERE
 	z.name = @zone
-	AND c.name GLOB @glob
+	AND e.name GLOB @glob
 ORDER BY
-	c.name
+	e.name
 LIMIT
 	COALESCE(NULLIF(@limit, 0), 100) OFFSET COALESCE(@offset, 0);
 
--- name: ReadClustersByZone :many
+-- name: ReadEnvironmentsByZone :many
 SELECT
-	c.id,
-	c.name,
+	e.id,
+	e.name,
 	z.name AS zone
 FROM
-	clusters c
+	environments e
 JOIN
-	zones z ON c.zone = z.id
+	zones z ON e.zone = z.id
 WHERE
 	z.name = @zone
 ORDER BY
-	c.name
+	e.name
 LIMIT
 	COALESCE(NULLIF(@limit, 0), 100) OFFSET COALESCE(@offset, 0);
 
@@ -82,22 +82,22 @@ LIMIT
 -- UPDATE
 --
 
--- name: UpdateClusterName :exec
+-- name: UpdateEnvironmentName :exec
 UPDATE
-	clusters
+	environments
 SET
 	name = @name
 WHERE
-	clusters.name = @cluster
+	environments.name = @environment
 	AND zone = (SELECT id FROM zones z WHERE z.name = @zone);
 
 --
 -- DELETE
 --
 
--- name: DeleteCluster :exec
+-- name: DeleteEnvironment :exec
 DELETE FROM
-	clusters
+	environments
 WHERE
-	clusters.id = @id;
+	environments.id = @id;
 

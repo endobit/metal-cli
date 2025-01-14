@@ -2,8 +2,8 @@
 -- CREATE
 --
 
--- name: CreateZone :exec
-INSERT INTO zones (
+-- name: CreateMake :exec
+INSERT INTO makes (
 	name
 )
 VALUES (
@@ -14,35 +14,32 @@ VALUES (
 -- READ
 --
 
--- name: ReadZones :many
+-- name: ReadMakes :many
 SELECT
 	id,
-	name,
-	time_zone
+	name
 FROM
-	zones
+	makes
 ORDER BY
 	name
 LIMIT
 	COALESCE(NULLIF(@limit, 0), 100) OFFSET COALESCE(@offset, 0);
 
--- name: ReadZone :one
+-- name: ReadMake :one
 SELECT
 	id,
-	name,
-	time_zone
+	name
 FROM
-	zones
+	makes
 WHERE
-	name = @zone;
+	name = @make;
 
--- name: ReadZonesByGlob :many
+-- name: ReadMakesByGlob :many
 SELECT
 	id,
-	name,
-	time_zone
+	name
 FROM
-	zones
+	makes
 WHERE
 	name GLOB @glob
 ORDER BY
@@ -54,29 +51,20 @@ LIMIT
 -- UPDATE
 --
 
--- name: UpdateZoneName :exec
+-- name: UpdateMakeName :exec
 UPDATE
-	zones
+	makes
 SET
 	name = @name
 WHERE
-	name = @zone;
-
--- name: UpdateZoneTimeZone :exec
-UPDATE
-	zones
-SET
-	time_zone = @time_zone
-WHERE
-	name = @zone;
+	name = @make;
 
 --
 -- DELETE
 --
 
--- name: DeleteZone :exec
+-- name: DeleteMake :exec
 DELETE FROM
-	zones
+	makes
 WHERE
 	id = @id;
-

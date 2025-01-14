@@ -2,47 +2,51 @@
 -- CREATE
 --
 
--- name: CreateZone :exec
-INSERT INTO zones (
+-- name: CreateUser :exec
+INSERT INTO users (
 	name
 )
 VALUES (
 	@name
 );
 
+
 --
 -- READ
 --
 
--- name: ReadZones :many
+-- name: ReadUsers :many
 SELECT
 	id,
 	name,
-	time_zone
+	email
 FROM
-	zones
+	users
 ORDER BY
 	name
 LIMIT
 	COALESCE(NULLIF(@limit, 0), 100) OFFSET COALESCE(@offset, 0);
 
--- name: ReadZone :one
-SELECT
-	id,
-	name,
-	time_zone
-FROM
-	zones
-WHERE
-	name = @zone;
 
--- name: ReadZonesByGlob :many
+-- name: ReadUser :one
 SELECT
 	id,
 	name,
-	time_zone
+	password_hash,
+	email
 FROM
-	zones
+	users
+WHERE
+	name = @user;
+
+-- name: ReadUsersByGlob :many
+SELECT
+	id,
+	name,
+	password_hash,
+	email
+FROM
+	users
 WHERE
 	name GLOB @glob
 ORDER BY
@@ -50,33 +54,35 @@ ORDER BY
 LIMIT
 	COALESCE(NULLIF(@limit, 0), 100) OFFSET COALESCE(@offset, 0);
 
+
 --
 -- UPDATE
 --
 
--- name: UpdateZoneName :exec
+-- name: UpdateUserEmail :exec
 UPDATE
-	zones
+	users
 SET
-	name = @name
+	email = @email
 WHERE
-	name = @zone;
+	name = @user;
 
--- name: UpdateZoneTimeZone :exec
+-- name: UpdateUserPassword :exec
 UPDATE
-	zones
+	users
 SET
-	time_zone = @time_zone
+	password_hash = @password_hash
 WHERE
-	name = @zone;
+	name = @user;
+
 
 --
 -- DELETE
 --
 
--- name: DeleteZone :exec
+-- name: DeleteUser :exec
 DELETE FROM
-	zones
+	users
 WHERE
 	id = @id;
 

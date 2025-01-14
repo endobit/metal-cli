@@ -2,8 +2,8 @@
 -- CREATE
 --
 
--- name: CreateCluster :exec
-INSERT INTO clusters (
+-- name: CreateAppliance :exec
+INSERT INTO appliances (
 	name,
 	zone
 )
@@ -17,64 +17,64 @@ VALUES (
 -- READ
 --
 
--- name: ReadClusters :many
+-- name: ReadAppliances :many
 SELECT
-	c.id,
-	c.name,
+	a.id,
+	a.name,
 	z.name AS zone
 FROM
-	clusters c
+	appliances a
 JOIN
-	zones z ON c.zone = z.id
+	zones z ON a.zone = z.id
 ORDER BY
 	z.name,
-	c.name
+	a.name
 LIMIT
 	COALESCE(NULLIF(@limit, 0), 100) OFFSET COALESCE(@offset, 0);
 
--- name: ReadCluster :one
+-- name: ReadAppliance :one
 SELECT
-	c.id,
-	c.name,
+	a.id,
+	a.name,
 	z.name AS zone
 FROM
-	clusters c
+	appliances a
 JOIN
-	zones z ON c.zone = z.id
+	zones z ON a.zone = z.id
 WHERE
-	c.name = @name
+	a.name = @name
 	AND z.name = @zone;
 
--- name: ReadClustersByGlob :many
+-- name: ReadAppliancesByGlob :many
 SELECT
-	c.id,
-	c.name,
+	a.id,
+	a.name,
 	z.name AS zone
 FROM
-	clusters c
+	appliances a
 JOIN
-	zones z ON c.zone = z.id
+	zones z ON a.zone = z.id
 WHERE
 	z.name = @zone
-	AND c.name GLOB @glob
+	AND a.name GLOB @glob
 ORDER BY
-	c.name
+	a.name
 LIMIT
 	COALESCE(NULLIF(@limit, 0), 100) OFFSET COALESCE(@offset, 0);
 
--- name: ReadClustersByZone :many
+-- name: ReadAppliancesByZone :many
 SELECT
-	c.id,
-	c.name,
+	a.id,
+	a.name,
 	z.name AS zone
 FROM
-	clusters c
+	appliances a
 JOIN
-	zones z ON c.zone = z.id
+	zones z ON a.zone = z.id
 WHERE
 	z.name = @zone
 ORDER BY
-	c.name
+	a.name
 LIMIT
 	COALESCE(NULLIF(@limit, 0), 100) OFFSET COALESCE(@offset, 0);
 
@@ -82,22 +82,22 @@ LIMIT
 -- UPDATE
 --
 
--- name: UpdateClusterName :exec
+-- name: UpdateApplianceName :exec
 UPDATE
-	clusters
+	appliances
 SET
 	name = @name
 WHERE
-	clusters.name = @cluster
+	appliances.name = @appliance
 	AND zone = (SELECT id FROM zones z WHERE z.name = @zone);
 
 --
 -- DELETE
 --
 
--- name: DeleteCluster :exec
+-- name: DeleteAppliance :exec
 DELETE FROM
-	clusters
+	appliances
 WHERE
-	clusters.id = @id;
+	appliances.id = @id;
 

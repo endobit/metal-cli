@@ -2,47 +2,50 @@
 -- CREATE
 --
 
--- name: CreateZone :exec
-INSERT INTO zones (
+-- name: CreateRole :exec
+INSERT INTO roles (
 	name
 )
 VALUES (
 	@name
 );
 
+
+
 --
 -- READ
 --
 
--- name: ReadZones :many
+-- name: ReadRoles :many
 SELECT
 	id,
 	name,
-	time_zone
+	description
 FROM
-	zones
+	roles
 ORDER BY
 	name
 LIMIT
 	COALESCE(NULLIF(@limit, 0), 100) OFFSET COALESCE(@offset, 0);
 
--- name: ReadZone :one
-SELECT
-	id,
-	name,
-	time_zone
-FROM
-	zones
-WHERE
-	name = @zone;
 
--- name: ReadZonesByGlob :many
+-- name: ReadRole :one
 SELECT
 	id,
 	name,
-	time_zone
+	description
 FROM
-	zones
+	roles
+WHERE
+	name = @role;
+
+-- name: ReadRolesByGlob :many
+SELECT
+	id,
+	name,
+	description
+FROM
+	roles
 WHERE
 	name GLOB @glob
 ORDER BY
@@ -50,33 +53,36 @@ ORDER BY
 LIMIT
 	COALESCE(NULLIF(@limit, 0), 100) OFFSET COALESCE(@offset, 0);
 
+
+
 --
 -- UPDATE
 --
 
--- name: UpdateZoneName :exec
+-- name: UpdateRoleName :exec
 UPDATE
-	zones
+	roles
 SET
 	name = @name
 WHERE
-	name = @zone;
+	name = @role;
 
--- name: UpdateZoneTimeZone :exec
+-- name: UpdateRoleDescription :exec
 UPDATE
-	zones
+	roles
 SET
-	time_zone = @time_zone
+	description = @description
 WHERE
-	name = @zone;
+	name = @role;
 
 --
 -- DELETE
 --
 
--- name: DeleteZone :exec
+-- name: DeleteRole :exec
 DELETE FROM
-	zones
+	roles
 WHERE
 	id = @id;
+
 
