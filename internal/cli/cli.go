@@ -1,28 +1,15 @@
-// Package cli provides the command line interface for stack.
 package cli
 
-import (
-	"github.com/spf13/cobra"
+//go:generate gotip tool "github.com/dmarkham/enumer" -type Verb -transform lower -text
+
+type Verb int
+
+const (
+	Add Verb = iota
+	Dump
+	List
+	Load
+	Remove
+	Report
+	Set
 )
-
-// NewRootCmd creates a new root command.
-func NewRootCmd() *cobra.Command {
-	cmd := cobra.Command{
-		Use:   "start",
-		Short: "stack is a command line tool for interacting with stackd",
-	}
-
-	cmd.AddCommand(newDumpCmd())
-	cmd.AddCommand(newLoadCmd())
-
-	return &cmd
-}
-
-func newDumpCmd() *cobra.Command {
-	cmd := cobra.Command{
-		Use:   "dump",
-		Short: "dump a stack",
-	}
-
-	return &cmd
-}

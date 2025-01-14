@@ -2,36 +2,13 @@ BUILDER=./.builder
 RULES=go
 include $(BUILDER)/rules.mk
 $(BUILDER)/rules.mk:
-	-go run github.com/endobit/builder@latest init
-
-# sqlc
-
-generate::
-	sqlc generate
-
-lint::
-	sqlc compile
-
-# protobuf
-
-generate::
-	buf generate
-	go generate ./...
-
-lint::
-	cd proto && buf lint
-
-nuke::
-	rm -rf gen
-
-format::
-	buf format -w
-
-# code
+	-go run endobit.io/builder@latest init
 
 build::
-	$(GO_BUILD) ./cmd/stackd
-	$(GO_BUILD) ./cmd/stack
+	CGO_ENABLED=0 $(GO_BUILD) -o stack .
 
 clean::
-	rm -f stackd stack
+	rm -f stack
+
+nuke::
+	rm -rf internal/generated

@@ -1,25 +1,25 @@
 issues:
-  include:
-    - EXC0004
-    - EXC0005
-    - EXC0011
-    - EXC0012
-    - EXC0013
-    - EXC0014
-    - EXC0015
+  # include:
+  #   - EXC0004
+  #   - EXC0005
+  #   - EXC0011
+  #   - EXC0012
+  #   - EXC0013
+  #   - EXC0014
+  #   - EXC0015
 
 linters:
+  disable:
+    - unused
   enable:
     - asciicheck
     - bodyclose
-    - depguard
     - dogsled
     - errname
     - errorlint
-    - exportloopref
+    - copyloopvar
     - forcetypeassert
     - gocognit
-    - goconst
     - gocritic
     - gocyclo
     - gofmt
@@ -33,13 +33,14 @@ linters:
     - nakedret
     - nestif
     - nilerr
-    - prealloc
+    - nolintlint
     - predeclared
     - revive
     - rowserrcheck
     - stylecheck
     - unconvert
     - unparam
+    - tagliatelle
     - wastedassign
 linters-settings:
   errorlint:
@@ -47,6 +48,8 @@ linters-settings:
   gosec:
     excludes:
       - G204
+  gocognit:
+    min-complexity: 50 # TODO: way too high, turn down later
   gocritic:
     enabled-tags:
       - diagnostic
@@ -56,10 +59,13 @@ linters-settings:
       - style
     disabled-checks:
       - whyNoLint
-    settings:
-      hugeParam:
-        sizeThreshold: 512
-      rangeValCopy:
-        sizeThreshold: 512
+      - commentedOutCode
   misspell:
     locale: US
+  nolintlint:
+    require-specific: true
+    require-explanation: false
+  tagliatelle:
+    case:
+      rules:
+        json: snake
