@@ -1,4 +1,4 @@
-package cli
+package commands
 
 func Optional[T comparable](v T) *T {
 	var zero T

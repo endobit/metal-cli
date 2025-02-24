@@ -11,10 +11,7 @@ import (
 	"google.golang.org/grpc/credentials"
 
 	"endobit.io/metal"
-	"endobit.io/metal-cli/internal/appliance"
-	"endobit.io/metal-cli/internal/cli"
-	"endobit.io/metal-cli/internal/model"
-	"endobit.io/metal-cli/internal/zone"
+	"endobit.io/metal-cli/internal/commands"
 	authpb "endobit.io/metal/gen/go/proto/auth/v1"
 	metalpb "endobit.io/metal/gen/go/proto/metal/v1"
 	"endobit.io/metal/logging"
@@ -75,105 +72,16 @@ func newRootCmd() *cobra.Command {
 	cmd.PersistentFlags().StringVar(&metalServer, "metal-server", "localhost:"+strconv.Itoa(metal.DefaultPort),
 		"address of the metal server")
 
+	root := commands.Root{Client: &rpc}
+
 	cmd.AddCommand(
-		newVerbCmd(cli.Add, &rpc),
-		newVerbCmd(cli.Dump, &rpc),
-		newVerbCmd(cli.List, &rpc),
-		newVerbCmd(cli.Load, &rpc),
-		newVerbCmd(cli.Remove, &rpc),
-		newVerbCmd(cli.Report, &rpc),
-		newVerbCmd(cli.Set, &rpc))
-
-	return &cmd
-}
-
-var (
-	jsonFlag bool
-)
-
-func newVerbCmd(verb cli.Verb, rpc *metal.Client) *cobra.Command {
-	var cmd cobra.Command
-
-	switch verb {
-	case cli.Add:
-		cmd = cobra.Command{
-			Use:     "add",
-			Aliases: []string{"create"},
-			Short:   "Add objects",
-		}
-
-		cmd.AddCommand(
-			appliance.NewCmd(verb, rpc),
-			model.NewCmd(verb, rpc),
-			zone.NewCmd(verb, rpc))
-
-	case cli.Dump:
-		cmd = cobra.Command{
-			Use:   "dump",
-			Short: "Dump stack schema",
-			Args:  cobra.NoArgs,
-			RunE: func(_ *cobra.Command, _ []string) error {
-				return dump(rpc)
-			},
-		}
-
-		cmd.PersistentFlags().BoolVar(&jsonFlag, "json", false, "output JSON instead of YAML")
-
-	case cli.Set:
-		cmd = cobra.Command{
-			Use:     "set",
-			Aliases: []string{"update"},
-			Short:   "Set object properties",
-		}
-
-		cmd.AddCommand(
-			appliance.NewCmd(verb, rpc),
-			model.NewCmd(verb, rpc),
-			zone.NewCmd(verb, rpc))
-
-	case cli.List:
-		cmd = cobra.Command{
-			Use:     "list",
-			Aliases: []string{"ls"},
-			Short:   "List objects",
-			Long:    "List is for humans.",
-		}
-
-		cmd.AddCommand(
-			appliance.NewCmd(verb, rpc),
-			model.NewCmd(verb, rpc),
-			zone.NewCmd(verb, rpc))
-
-	case cli.Load:
-		cmd = cobra.Command{
-			Use:     "load filename",
-			Aliases: []string{"ld"},
-			Args:    cobra.ExactArgs(1),
-			Short:   "Load objects",
-			RunE: func(_ *cobra.Command, args []string) error {
-				return load(rpc, args[0])
-			},
-		}
-
-	case cli.Report:
-		cmd = cobra.Command{
-			Use:   "report",
-			Short: "Report objects",
-			Long:  "Report is for computers.",
-		}
-
-	case cli.Remove:
-		cmd = cobra.Command{
-			Use:     "remove",
-			Aliases: []string{"del", "rm"},
-			Short:   "Remove objects",
-		}
-
-		cmd.AddCommand(
-			appliance.NewCmd(verb, rpc),
-			model.NewCmd(verb, rpc),
-			zone.NewCmd(verb, rpc))
-	}
+		root.New(commands.Add),
+		root.New(commands.Dump),
+		root.New(commands.List),
+		root.New(commands.Load),
+		root.New(commands.Remove),
+		root.New(commands.Report),
+		root.New(commands.Set))
 
 	return &cmd
 }
